@@ -55,8 +55,8 @@ def parse_args(args):
     parser.add_argument(
         '--select-first',
         help="automatically select the first movie in the search",
-        type=bool,
-        default=True,
+        type=str,
+        default="y",
         metavar="BOOL"
     )
     return parser.parse_args(args)
@@ -80,7 +80,10 @@ def main(args):
     src = args.src
     dest = args.dest
     select_first = args.select_first
-
+    if select_first == "y":
+        select_first = True
+    else:
+        select_first = False
     movies = utils.list_folders(src)
     if movies is None:
         print('No movies found in: ' + src)

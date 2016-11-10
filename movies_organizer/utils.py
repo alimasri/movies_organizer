@@ -97,7 +97,7 @@ def search(movie_title, select_first):
             imdb_id = movie.get('imdb_id')
             break
         elif answer == 's':
-            break
+            return None
     if imdb_id == -1:
         return None
     info = imdb.get_title_by_id(imdb_id)
