@@ -1,0 +1,118 @@
+import os
+import sys
+import argparse
+import sys
+import logging
+
+from movies_organizer import utils, __version__
+
+__author__ = "Ali Masri"
+__copyright__ = "Ali Masri"
+__license__ = "MIT"
+
+_logger = logging.getLogger(__name__)
+
+
+def parse_args(args):
+    """Parse command line parameters
+
+    Args:
+      args ([str]): command line parameters as list of strings
+
+    Returns:
+      :obj:`argparse.Namespace`: command line parameters namespace
+    """
+    parser = argparse.ArgumentParser(
+        description="Movie library organizer")
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='movies_organizer {ver}'.format(ver=__version__))
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        dest="loglevel",
+        help="set loglevel to INFO",
+        action='store_const',
+        const=logging.INFO)
+    parser.add_argument(
+        '-vv',
+        '--very-verbose',
+        dest="loglevel",
+        help="set loglevel to DEBUG",
+        action='store_const',
+        const=logging.DEBUG)
+    parser.add_argument(
+        '--src',
+        help="the source directory",
+        type=str,
+        metavar="TEXT")
+    parser.add_argument(
+        '--dest',
+        help="the destination folder",
+        type=str,
+        metavar="TEXT")
+    parser.add_argument(
+        '--select-first',
+        help="automatically select the first movie in the search",
+        type=bool,
+        default=True,
+        metavar="BOOL"
+    )
+    return parser.parse_args(args)
+
+
+def setup_logging(loglevel):
+    """Setup basic logging
+
+    Args:
+      loglevel (int): minimum loglevel for emitting messages
+    """
+    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
+    logging.basicConfig(level=loglevel, stream=sys.stdout,
+                        format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
+
+
+def main(args):
+    args = parse_args(args)
+    setup_logging(args.loglevel)
+    _logger.debug("Program started...")
+    src = args.src
+    dest = args.dest
+    select_first = args.select_first
+
+    movies = utils.list_folders(src)
+    if movies is None:
+        print('No movies found in: ' + src)
+        exit(0)
+    missing_movies = []
+    for movie_title in movies:
+        try:
+            print("**************************************")
+            print("Searching for " + movie_title + "...")
+            movie = utils.search(movie_title, select_first)
+            if movie is None:
+                print('Movie not found...')
+                missing_movies.append(movie_title)
+                continue
+            utils.move_files(os.path.join(src, movie_title), dest, movie)
+        except PermissionError as error:
+            print(error)
+            continue
+    if len(missing_movies) != 0:
+        print("**************************************")
+        print('Sorry we could not find the following movies:')
+        for movie_title in missing_movies:
+            print(movie_title)
+            print("**************************************")
+    _logger.info("Process finished")
+
+
+def run():
+    """Entry point for console_scripts
+    """
+    main(sys.argv[1:])
+
+
+if __name__ == '__main__':
+    run()
