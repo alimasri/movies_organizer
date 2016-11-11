@@ -80,7 +80,7 @@ def main(args):
     src = args.src
     dest = args.dest
     auto_select = args.auto
-    movies = utils.list_folders(src)
+    movies = os.listdir(src)
     if movies is None:
         print('No movies found in: ' + src)
         exit(0)

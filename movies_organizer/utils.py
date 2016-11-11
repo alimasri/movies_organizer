@@ -54,11 +54,17 @@ def move_files(src, dest, movie):
     dest = os.path.join(dest, folder_name)
     if not os.path.exists(dest):
         os.makedirs(dest)
-    files = os.listdir(src)
-    print('Moving files from {0} to {1}'.format(src, dest))
-    for file in files:
-        shutil.move(os.path.join(src, file), dest)
-    shutil.rmtree(src)
+    if os.path.isdir(src):
+        # src is a directory
+        files = os.listdir(src)
+        print('Moving files from {0} to {1}'.format(src, dest))
+        for file in files:
+            shutil.move(os.path.join(src, file), dest)
+        shutil.rmtree(src)
+    else:
+        # src is a movie file
+        print('Movie file {0} to {1}'.format(src, dest))
+        shutil.move(src, dest)
     print('Downloading movie cover...')
     download_cover(movie, dest)
     print('Printing movie information...')
@@ -94,7 +100,7 @@ def search(movie_title, auto_select):
             else:
                 flag = False
         if answer == 'y':
-            if int(movie.get('year')) != guess['year']:
+            if 'year' in guess and (int(movie.get('year')) != guess['year']):
                 continue
             print("Please wait, getting more information...")
             imdb_id = movie.get('imdb_id')
