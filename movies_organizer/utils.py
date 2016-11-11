@@ -100,7 +100,7 @@ def search(movie_title, auto_select):
             else:
                 flag = False
         if answer == 'y':
-            if 'year' in guess and (int(movie.get('year')) != guess['year']):
+            if 'year' in guess and 'year' in movie and (int(movie.get('year')) != guess['year']):
                 continue
             print("Please wait, getting more information...")
             imdb_id = movie.get('imdb_id')
