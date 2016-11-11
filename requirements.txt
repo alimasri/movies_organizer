@@ -1,3 +1,4 @@
+guessit
 imdbpie
 requests
 # Add your requirements here like:

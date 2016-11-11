@@ -53,11 +53,11 @@ def parse_args(args):
         type=str,
         metavar="TEXT")
     parser.add_argument(
-        '--select-first',
-        help="automatically select the first movie in the search",
-        type=str,
-        default="y",
-        metavar="BOOL"
+        '--auto',
+        const=True,
+        default=False,
+        nargs='?',
+        help="automatically select a movie from the search results",
     )
     return parser.parse_args(args)
 
@@ -79,11 +79,7 @@ def main(args):
     _logger.debug("Program started...")
     src = args.src
     dest = args.dest
-    select_first = args.select_first
-    if select_first == "y":
-        select_first = True
-    else:
-        select_first = False
+    auto_select = args.auto
     movies = utils.list_folders(src)
     if movies is None:
         print('No movies found in: ' + src)
@@ -93,13 +89,13 @@ def main(args):
         try:
             print("**************************************")
             print("Searching for " + movie_title + "...")
-            movie = utils.search(movie_title, select_first)
+            movie = utils.search(movie_title, auto_select)
             if movie is None:
                 print('Movie not found...')
                 missing_movies.append(movie_title)
                 continue
             utils.move_files(os.path.join(src, movie_title), dest, movie)
-        except PermissionError as error:
+        except Exception as error:
             print(error)
             continue
     if len(missing_movies) != 0:

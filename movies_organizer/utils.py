@@ -3,8 +3,8 @@ import re
 import requests
 import shutil
 
+from guessit import guessit
 from imdbpie import Imdb
-
 from movies_organizer.movie import Movie
 
 imdb = Imdb()
@@ -27,7 +27,11 @@ def print_movie_information(to_dir, movie):
 
 
 def download_cover(movie, path):
-    response = requests.get(movie.cover, stream=True)
+    try:
+        response = requests.get(movie.cover, stream=True)
+    except Exception as error:
+        print(error)
+        return None
     if response.ok:
         extension = os.path.splitext(movie.cover)[1]
         filename = "{0}_{1}{2}".format(movie.title, movie.year, extension)
@@ -40,24 +44,25 @@ def download_cover(movie, path):
         image.close()
 
 
-def move_files(from_dir, to_dir, movie):
+def move_files(src, dest, movie):
     folder_name = '{0}_{1}_{2}'.format(movie.title, movie.year, movie.rating)
     folder_name = format_file_name(folder_name)
     genres_path = ', '.join(str(e) for e in movie.genres).lower()
-    to_dir = os.path.join(to_dir, genres_path)
-    if not os.path.exists(to_dir):
-        os.makedirs(to_dir)
-    to_dir = os.path.join(to_dir, folder_name)
-    if not os.path.exists(to_dir):
-        os.makedirs(to_dir)
-    files = os.listdir(from_dir)
-    print('Moving files from {0} to {1}'.format(from_dir, to_dir))
+    dest = os.path.join(dest, genres_path)
+    if not os.path.exists(dest):
+        os.makedirs(dest)
+    dest = os.path.join(dest, folder_name)
+    if not os.path.exists(dest):
+        os.makedirs(dest)
+    files = os.listdir(src)
+    print('Moving files from {0} to {1}'.format(src, dest))
     for file in files:
-        shutil.copy(os.path.join(from_dir, file), to_dir)
+        shutil.move(os.path.join(src, file), dest)
+    shutil.rmtree(src)
     print('Downloading movie cover...')
-    download_cover(movie, to_dir)
+    download_cover(movie, dest)
     print('Printing movie information...')
-    print_movie_information(to_dir, movie)
+    print_movie_information(dest, movie)
     print('Done')
     return None
 
@@ -69,13 +74,9 @@ def list_folders(path):
             yield file
 
 
-def search(movie_title, select_first):
-    movie_title = re.sub(r'\(.*\)|\[.*\]', '', movie_title)
-    # TODO: add more possible options
-    possible_titles = [movie_title]
-    movies = []
-    for possible_title in possible_titles:
-        movies.extend(imdb.search_for_title(possible_title))
+def search(movie_title, auto_select):
+    guess = guessit(movie_title)
+    movies = imdb.search_for_title(guess['title'])
     if movies is None:
         return None
     print("Found {0} movies".format(len(movies)))
@@ -83,7 +84,7 @@ def search(movie_title, select_first):
     for movie in movies:
         print('Title: {0}, Year: {1}'.format(movie.get('title'), movie.get('year')))
         # if the select first option is set then set the flag to false in order to skip the loop
-        flag = not select_first
+        flag = not auto_select
         # if the select first option is set then the answer is y to get the movie information directly
         answer = "y"
         while flag:
@@ -93,6 +94,8 @@ def search(movie_title, select_first):
             else:
                 flag = False
         if answer == 'y':
+            if int(movie.get('year')) != guess['year']:
+                continue
             print("Please wait, getting more information...")
             imdb_id = movie.get('imdb_id')
             break
