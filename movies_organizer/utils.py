@@ -47,7 +47,7 @@ def download_cover(movie, path):
 def move_files(src, dest, movie):
     folder_name = '{0}_{1}_{2}'.format(movie.title, movie.year, movie.rating)
     folder_name = format_file_name(folder_name)
-    genres_path = ', '.join(str(e) for e in movie.genres).lower()
+    genres_path = ','.join(str(e) for e in movie.genres).lower()
     dest = os.path.join(dest, genres_path)
     if not os.path.exists(dest):
         os.makedirs(dest)
