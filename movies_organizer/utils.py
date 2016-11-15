@@ -82,6 +82,8 @@ def list_folders(path):
 
 def search(movie_title, auto_select):
     guess = guessit(movie_title)
+    if 'title' not in guess:
+        guess['title'] = os.path.splitext(movie_title)[0]
     movies = imdb.search_for_title(guess['title'])
     if movies is None:
         return None
