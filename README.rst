@@ -20,6 +20,8 @@ The enriched information contain data about the movie genre, formatted movie nam
 Movies then will be grouped by their genre and put in a folder formatted as follows [genres]/movie-name_year_rating.
 For example: comedy,drama/Perfect Strangers_2016_7.7
 
+The folder will contain the movie file, the downloaded movie cover and an info.txt file that contains additional information about the movie.
+
 This will make it easier for users to navigate their movies.
 User may use simple file searches to filter their movies.
 
