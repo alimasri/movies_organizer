@@ -37,7 +37,8 @@ To do so please follow the directions below:
 1. Install Python
 2. Download the project
 3. Navigate to the project's directory
-4. Run the command: `python setup.py install`
+4. Run the command: `pip install -r requirements.txt`
+5. Run the command: `python setup.py install`
 
 This command will download and install the project with the required dependencies.
 
