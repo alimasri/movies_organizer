@@ -20,6 +20,7 @@ This will make it easier for users to navigate their movies.
 User may use simple file searches to filter their movies.
 Example:
 search for _7* to get all movies with rating 7, search for comedy to get all comedy movies, etc.
+
 Installation and Usage
 ======================
 
