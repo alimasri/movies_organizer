@@ -1,8 +1,7 @@
+import argparse
+import logging
 import os
 import sys
-import argparse
-import sys
-import logging
 
 from movies_organizer import utils, __version__
 
