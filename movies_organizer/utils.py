@@ -90,6 +90,8 @@ def search(movie_title, auto_select):
     print("Found {0} movies".format(len(movies)))
     imdb_id = -1
     for movie in movies:
+        if 'year' in guess and 'year' in movie and (int(movie.get('year')) != guess['year']):
+                continue
         print('Title: {0}, Year: {1}'.format(movie.get('title'), movie.get('year')))
         # if the select first option is set then set the flag to false in order to skip the loop
         flag = not auto_select
@@ -102,8 +104,6 @@ def search(movie_title, auto_select):
             else:
                 flag = False
         if answer == 'y':
-            if 'year' in guess and 'year' in movie and (int(movie.get('year')) != guess['year']):
-                continue
             print("Please wait, getting more information...")
             imdb_id = movie.get('imdb_id')
             break
