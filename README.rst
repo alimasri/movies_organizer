@@ -22,7 +22,11 @@ Installation and Usage
 
 Installing movies organizer is very simple.
 First please note that you should have Python installed.
-Download the project, navigate to the directory and run the command python setup.py install
+Download the project, navigate to the directory and run the command: <br />
+ ```
+ python setup.py install
+```
+<br />
 This command will download and install the project with the required dependencies.
 After the installation process is finished you can access the program from a command line interface using the following command:
 movie_organizer --src "source folder" --dest "destination folder" [--auto]
