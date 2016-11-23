@@ -23,6 +23,7 @@ For example: comedy,drama/Perfect Strangers_2016_7.7
 The folder will contain the movie file, the downloaded movie cover and an info.txt file that contains additional information about the movie.
 
 This will make it easier for users to navigate their movies.
+
 User may use simple file searches to filter their movies.
 
 Example:
