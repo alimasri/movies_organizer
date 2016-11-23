@@ -95,7 +95,7 @@ def search(movie_title, auto_select):
                 if int(movie.get('year')) != guess['year']:
                     continue
         print('Title: {0}, Year: {1}'.format(movie.get('title'), movie.get('year')))
-        flag = True
+        flag = not auto_select
         answer = "y"
         while flag:
             answer = input("Is this your movie? yes (y), no (n), skip (s)? ")
