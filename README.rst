@@ -10,14 +10,19 @@ Description
 ===========
 
 Movies Organizer helps users easily organize their movie collection repository by using the IMDB API to categorize movies and enrich them with information such as rating, genre, etc.
+
 The application first scans a given repository for folders and movie files.
-Then it will use the folder/file name to guess some movie information.
+Then it uses the folder/file name to guess some movie information.
 These information are then sent to IMDB to be enriched.
+
 The enriched information contain data about the movie genre, formatted movie name, release data, runtime and plot.
+
 Movies then will be grouped by their genre and put in a folder formatted as follows [genres]/movie-name_year_rating.
 For example: comedy,drama/Perfect Strangers_2016_7.7
+
 This will make it easier for users to navigate their movies.
 User may use simple file searches to filter their movies.
+
 Example:
 search for _7* to get all movies with rating 7, search for comedy to get all comedy movies, etc.
 
