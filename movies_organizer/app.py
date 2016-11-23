@@ -73,6 +73,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
+    num_stars = 40
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Program started...")
@@ -86,7 +87,7 @@ def main(args):
     missing_movies = []
     for movie_title in movies:
         try:
-            print("**************************************")
+            print(num_stars * "*")
             print("Searching for " + movie_title + "...")
             movie = utils.search(movie_title, auto_select)
             if movie is None:
@@ -98,11 +99,11 @@ def main(args):
             print(error)
             continue
     if len(missing_movies) != 0:
-        print("**************************************")
+        print(num_stars * "*")
         print('Sorry we could not find the following movies:')
         for movie_title in missing_movies:
             print(movie_title)
-            print("**************************************")
+            print(num_stars * "*")
     _logger.info("Process finished")
 
 

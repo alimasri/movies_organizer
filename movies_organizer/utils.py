@@ -15,15 +15,15 @@ def format_file_name(name):
 
 
 def print_movie_information(to_dir, movie):
-    file = open(os.path.join(to_dir, 'info.txt'), 'w')
-    file.write('Title: {0}\n'
-               'Year: {1}\n'
-               'Release date: {2}\n'
-               'Rating: {3}\n'
-               'Runtime: {4}\n'
-               'Plot summary: {5}'.format(
-        movie.title, movie.year, movie.release_date, movie.rating, movie.runtime, movie.plot))
-    file.close()
+    with open(os.path.join(to_dir, 'info.txt'), 'w') as file:
+        file.write('Title: {0}\n'
+                   'Year: {1}\n'
+                   'Release date: {2}\n'
+                   'Rating: {3}\n'
+                   'Runtime: {4}\n'
+                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating, movie.runtime,
+                                              movie.plot))
+        file.close()
 
 
 def download_cover(movie, path):
@@ -36,12 +36,12 @@ def download_cover(movie, path):
         extension = os.path.splitext(movie.cover)[1]
         filename = "{0}_{1}{2}".format(movie.title, movie.year, extension)
         filename = format_file_name(filename.lower())
-        image = open(os.path.join(path, filename), 'wb')
-        for block in response.iter_content(1024):
-            if not block:
-                break
-            image.write(block)
-        image.close()
+        with open(os.path.join(path, filename), 'wb') as image:
+            for block in response.iter_content(1024):
+                if not block:
+                    break
+                image.write(block)
+            image.close()
 
 
 def move_files(src, dest, movie):
@@ -90,12 +90,12 @@ def search(movie_title, auto_select):
     print("Found {0} movies".format(len(movies)))
     imdb_id = -1
     for movie in movies:
-        if auto_select and ('year' in guess) and ('year' in movie) and (int(movie.get('year')) != guess['year']):
-            continue
+        if auto_select is True:
+            if 'year' in guess and 'year' in movie:
+                if int(movie.get('year')) != guess['year']:
+                    continue
         print('Title: {0}, Year: {1}'.format(movie.get('title'), movie.get('year')))
-        # if the select first option is set then set the flag to false in order to skip the loop
-        flag = not auto_select
-        # if the select first option is set then the answer is y to get the movie information directly
+        flag = True
         answer = "y"
         while flag:
             answer = input("Is this your movie? yes (y), no (n), skip (s)? ")
