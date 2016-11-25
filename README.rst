@@ -40,9 +40,9 @@ To do so please follow the directions below:
  a. If not download the file [get-pip.py] (https://bootstrap.pypa.io/get-pip.py/), being careful to save it as a .py file rather than .txt
  b. Run it from the command prompt: python get-pip.py
 3. Download the project
-3. Navigate to the project's directory
-4. Run the command: `pip install -r requirements.txt`
-5. Run the command: `python setup.py install`
+4. Navigate to the project's directory
+5. Run the command: `pip install -r requirements.txt`
+6. Run the command: `python setup.py install`
 
 This command will download and install the project with the required dependencies.
 
