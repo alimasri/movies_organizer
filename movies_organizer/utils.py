@@ -5,6 +5,8 @@ import shutil
 
 from guessit import guessit
 from imdbpie import Imdb
+from requests import RequestException
+
 from movies_organizer.movie import Movie
 
 imdb = Imdb()
@@ -29,7 +31,7 @@ def print_movie_information(to_dir, movie):
 def download_cover(movie, path):
     try:
         response = requests.get(movie.cover, stream=True)
-    except Exception as error:
+    except RequestException as error:
         print(error)
         return None
     if response.ok:
