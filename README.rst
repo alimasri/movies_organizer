@@ -37,8 +37,8 @@ To do so please follow the directions below:
 
 1. Install Python https://www.python.org/downloads/
 2. Install pip (python package manager)
-  1. Download the file [get-pip.py] (https://bootstrap.pypa.io/get-pip.py/), being careful to save it as a .py file rather than .txt
-  2. Run it from the command prompt: python get-pip.py
+  a. Download the file [get-pip.py] (https://bootstrap.pypa.io/get-pip.py/), being careful to save it as a .py file rather than .txt
+  b. Run it from the command prompt: python get-pip.py
 3. Download the project
 4. Navigate to the project's directory
 5. Run the command: `pip install -r requirements.txt`
