@@ -35,7 +35,7 @@ Installation
 Installing movies organizer is very simple.
 To do so please follow the directions below:
 
-1. Install Python
+1. Install Python https://www.python.org/downloads/
 2. Download the project
 3. Navigate to the project's directory
 4. Run the command: `pip install -r requirements.txt`
