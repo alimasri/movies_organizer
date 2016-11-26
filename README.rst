@@ -35,11 +35,14 @@ Installation
 Installing movies organizer is very simple.
 To do so please follow the directions below:
 
-1. Install Python https://www.python.org/downloads/
-2. Download the project
-3. Navigate to the project's directory
-4. Run the command: `pip install -r requirements.txt`
-5. Run the command: `python setup.py install`
+1. Install Python https://www.python.org/downloads/ and add it to your path
+2. Check if you have pip (python package manager) installed by running `pip --version`
+ a. If not download the file [get-pip.py] (https://bootstrap.pypa.io/get-pip.py/), being careful to save it as a .py file rather than .txt
+ b. Run it from the command prompt: python get-pip.py
+3. Download the project
+4. Navigate to the project's directory
+5. Run the command: `pip install -r requirements.txt`
+6. Run the command: `python setup.py install`
 
 This command will download and install the project with the required dependencies.
 
@@ -48,7 +51,7 @@ Usage
 
 After the installation process is finished you can access the program from a command line interface using the following command:
 
-`movie_organizer --src "source folder" --dest "destination folder" [--auto]`
+`movies_organizer --src "source folder" --dest "destination folder" [--auto]`
 
 1. You can simply choose the same folder for src and dest to move the files to the same directory.
 2. In case src and dest were omitted, the program will proceed with the same directory the program was run from.
