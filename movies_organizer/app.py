@@ -78,7 +78,7 @@ def main(args):
     setup_logging(args.loglevel)
     _logger.debug("Program started...")
     src = args.src if args.src is not None else "."
-    dest = args.dest if args.dest is not None else "."
+    dest = args.dest if args.dest is not None else src
     auto_select = args.auto
     movies = os.listdir(src)
     if movies is None:
