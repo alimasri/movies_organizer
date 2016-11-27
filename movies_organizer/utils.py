@@ -23,7 +23,7 @@ def print_movie_information(to_dir, movie):
                    'Release date: {2}\n'
                    'Rating: {3}\n'
                    'Runtime: {4}\n'
-                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating, movie.runtime,
+                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating, print_time(movie.runtime),
                                               movie.plot))
         file.close()
 
@@ -80,6 +80,12 @@ def list_folders(path):
     for file in files:
         if os.path.isdir(os.path.join(path, file)):
             yield file
+
+
+def print_time(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    return "%d:%02d:%02d" % (h, m, s)
 
 
 def search(movie_title, auto_select):
