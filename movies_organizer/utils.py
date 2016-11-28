@@ -2,9 +2,11 @@ import os
 import re
 import requests
 import shutil
+import sys
 
 from guessit import guessit
 from imdbpie import Imdb
+from past.builtins import raw_input
 from requests import RequestException
 
 from movies_organizer.movie import Movie
@@ -23,7 +25,8 @@ def print_movie_information(to_dir, movie):
                    'Release date: {2}\n'
                    'Rating: {3}\n'
                    'Runtime: {4}\n'
-                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating, print_time(movie.runtime),
+                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating,
+                                              print_time(movie.runtime),
                                               movie.plot))
         file.close()
 
@@ -106,7 +109,11 @@ def search(movie_title, auto_select):
         flag = not auto_select
         answer = "y"
         while flag:
-            answer = input("Is this your movie? yes (y), no (n), skip (s)? ")
+            python_version = sys.version_info[:1][0]
+            if python_version == '3':
+                answer = input("Is this your movie? yes (y), no (n), skip (s)? ")
+            else:
+                answer = raw_input("Is this your movie? yes (y), no (n), skip (s)? ")
             if answer not in ['y', 'n', 's']:
                 print('Invalid option')
             else:
