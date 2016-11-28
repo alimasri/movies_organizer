@@ -2,20 +2,17 @@ import os
 import re
 import requests
 import shutil
+import sys
 
 from guessit import guessit
 from imdbpie import Imdb
-from past.builtins import raw_input
 from requests import RequestException
 
 from movies_organizer.movie import Movie
 
 imdb = Imdb()
 
-import sys
-
-if sys.version[0] != "3":
-    input = raw_input
+if sys.version[0] == "3": raw_input = input
 
 
 def format_file_name(name):
@@ -113,7 +110,7 @@ def search(movie_title, auto_select):
         flag = not auto_select
         answer = "y"
         while flag:
-            answer = input("Is this your movie? yes (y), no (n), skip (s)? ")
+            answer = raw_input("Is this your movie? yes (y), no (n), skip (s)? ")
             if answer not in ['y', 'n', 's']:
                 print('Invalid option')
             else:
