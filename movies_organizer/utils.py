@@ -14,7 +14,7 @@ imdb = Imdb()
 
 import sys
 
-if sys.version[0] == "3":
+if sys.version[0] != "3":
     input = raw_input
 
 
