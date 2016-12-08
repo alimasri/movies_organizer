@@ -29,7 +29,6 @@ def print_movie_information(to_dir, movie):
                    'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating,
                                               print_time(movie.runtime),
                                               movie.plot))
-        file.close()
 
 
 def download_cover(movie, path):
@@ -47,7 +46,6 @@ def download_cover(movie, path):
                 if not block:
                     break
                 image.write(block)
-            image.close()
 
 
 def move_files(src, dest, movie):
