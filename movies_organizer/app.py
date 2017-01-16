@@ -88,7 +88,7 @@ def main(args):
     for movie_title in movies:
         try:
             print(num_stars * "*")
-            print("Searching for " + movie_title + "...")
+            print("Searching for " + str(movie_title.encode("utf8")) + "...")
             movie = utils.search(movie_title, auto_select)
             if movie is None:
                 print('Movie not found...')
@@ -102,7 +102,7 @@ def main(args):
         print(num_stars * "*")
         print('Sorry we could not find the following movies:')
         for movie_title in missing_movies:
-            print(movie_title)
+            print(str(movie_title.encode("utf8")))
             print(num_stars * "*")
     _logger.info("Process finished")
 

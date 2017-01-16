@@ -67,7 +67,7 @@ def move_files(src, dest, movie):
         shutil.rmtree(src)
     else:
         # src is a movie file
-        print('Movie file {0} to {1}'.format(src, dest))
+        print('Movie file {0} to {1}'.format(str(src.encode("utf8")), str(dest.encode("utf8"))))
         shutil.move(src, dest)
     print('Downloading movie cover...')
     download_cover(movie, dest)
