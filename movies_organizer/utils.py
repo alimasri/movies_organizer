@@ -121,14 +121,14 @@ def search(movie_title, auto_select):
             return None
     if imdb_id == -1:
         return None
-    info = imdb.get_title_by_id(imdb_id)
+    info = imdb.get_title(imdb_id)
     movie = Movie()
-    movie.title = info.title
-    movie.year = info.year
-    movie.release_date = info.release_date
-    movie.rating = info.rating
-    movie.runtime = info.runtime
-    movie.genres = info.genres
-    movie.cover = info.poster_url
-    movie.plot = info.plot_outline
+    movie.title = info['base']['title']
+    movie.year = info['base']['year']
+    movie.release_date = None
+    movie.rating = info['ratings']['rating']
+    movie.runtime = info['base']['runningTimeInMinutes']
+    movie.genres = imdb.get_title_genres(imdb_id)['genres']
+    movie.cover = info['base']['image']['url']
+    movie.plot = info['plot']['outline']['text']
     return movie
