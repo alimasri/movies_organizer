@@ -93,7 +93,7 @@ def search(movie_title, auto_select):
     guess = guessit(movie_title)
     if 'title' not in guess:
         guess['title'] = os.path.splitext(movie_title)[0]
-    movies = api.search_movie(movie_title)
+    movies = api.search_movie(guess['title'])
     if movies is None:
         return None
     print("Found {0} movies".format(len(movies)))
