@@ -5,12 +5,12 @@ import shutil
 import sys
 
 from guessit import guessit
-from imdbpie import Imdb
+import imdb
 from requests import RequestException
 
 from movies_organizer.movie import Movie
 
-imdb = Imdb()
+api = imdb.IMDb()
 
 if sys.version[0] == "3": raw_input = input
 
@@ -85,7 +85,7 @@ def list_folders(path):
 
 
 def print_time(mins):
-    h, m = divmod(mins, 60)
+    h, m = divmod(int(mins), 60)
     return "%02d:%02d" % (h, m)
 
 
@@ -93,17 +93,17 @@ def search(movie_title, auto_select):
     guess = guessit(movie_title)
     if 'title' not in guess:
         guess['title'] = os.path.splitext(movie_title)[0]
-    movies = imdb.search_for_title(guess['title'])
+    movies = api.search_movie(movie_title)
     if movies is None:
         return None
     print("Found {0} movies".format(len(movies)))
-    imdb_id = -1
-    for movie in movies:
+    my_movie = None
+    for current_movie in movies:
         if auto_select is True:
-            if 'year' in guess and 'year' in movie:
-                if int(movie.get('year')) != guess['year']:
+            if 'year' in guess and 'year' in current_movie:
+                if int(current_movie.get('year')) != guess['year']:
                     continue
-        print('Title: {0}, Year: {1}'.format(movie.get('title'), movie.get('year')))
+        print('Title: {0}, Year: {1}'.format(current_movie.get('title'), current_movie.get('year')))
         flag = not auto_select
         answer = "y"
         while flag:
@@ -113,21 +113,21 @@ def search(movie_title, auto_select):
             else:
                 flag = False
         if answer == 'y':
-            print("Please wait, getting more information...")
-            imdb_id = movie.get('imdb_id')
+            my_movie = current_movie
             break
         elif answer == 's':
             return None
-    if imdb_id == -1:
+    if my_movie is None:
         return None
-    info = imdb.get_title(imdb_id)
+    print("Please wait, getting more information...")
+    api.update(my_movie)
     movie = Movie()
-    movie.title = info['base']['title']
-    movie.year = info['base']['year']
-    movie.release_date = None
-    movie.rating = info['ratings']['rating']
-    movie.runtime = info['base']['runningTimeInMinutes']
-    movie.genres = imdb.get_title_genres(imdb_id)['genres']
-    movie.cover = info['base']['image']['url']
-    movie.plot = info['plot']['outline']['text']
+    movie.title = my_movie['title']
+    movie.year = my_movie['year']
+    movie.release_date = my_movie['original air date']
+    movie.rating = my_movie['rating']
+    movie.runtime = my_movie['runtime'][0]
+    movie.genres = my_movie['genres']
+    movie.cover = my_movie['cover url']
+    movie.plot = my_movie['plot outline']
     return movie
