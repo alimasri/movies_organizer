@@ -13,14 +13,6 @@ _logger = logging.getLogger(__name__)
 
 
 def parse_args(args):
-    """Parse command line parameters
-
-    Args:
-      args ([str]): command line parameters as list of strings
-
-    Returns:
-      :obj:`argparse.Namespace`: command line parameters namespace
-    """
     parser = argparse.ArgumentParser(
         description="Movie library organizer")
     parser.add_argument(
@@ -47,7 +39,7 @@ def parse_args(args):
         type=str,
         metavar="TEXT")
     parser.add_argument(
-        '--dest',
+        '--dst',
         help="the destination folder",
         type=str,
         metavar="TEXT")
@@ -62,11 +54,6 @@ def parse_args(args):
 
 
 def setup_logging(loglevel):
-    """Setup basic logging
-
-    Args:
-      loglevel (int): minimum loglevel for emitting messages
-    """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
     logging.basicConfig(level=loglevel, stream=sys.stdout,
                         format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
@@ -78,14 +65,15 @@ def main(args):
     setup_logging(args.loglevel)
     _logger.debug("Program started...")
     src = args.src if args.src is not None else "."
-    dest = args.dest if args.dest is not None else src
     auto_select = args.auto
+    dst = args.dst if args.dst is not None else src
     movies = os.listdir(src)
     if movies is None:
         print('No movies found in: ' + src)
         exit(0)
     missing_movies = []
-    for movie_title in movies:
+    for file_name in movies:
+        movie_title = os.path.splitext(file_name)[0]
         try:
             print(num_stars * "*")
             print("Searching for " + str(movie_title.encode("utf8")) + "...")
@@ -94,9 +82,9 @@ def main(args):
                 print('Movie not found...')
                 missing_movies.append(movie_title)
                 continue
-            utils.move_files(os.path.join(src, movie_title), dest, movie)
+            utils.move_files(os.path.join(src, file_name), dst, movie)
         except Exception as error:
-            print(error)
+            print('Error: ' + str(error))
             continue
     if len(missing_movies) != 0:
         print(num_stars * "*")
@@ -108,8 +96,6 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts
-    """
     main(sys.argv[1:])
 
 

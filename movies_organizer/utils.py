@@ -12,72 +12,75 @@ from movies_organizer.movie import Movie
 
 api = imdb.IMDb()
 
-if sys.version[0] == "3": raw_input = input
+if sys.version[0] == "3":
+    raw_input = input
 
 
 def format_file_name(name):
+    if name is None:
+        return None
     return re.sub('[/:*?\"<>|]', '', name)
 
 
 def print_movie_information(to_dir, movie):
+    if movie is None or to_dir is None:
+        return None
     with open(os.path.join(to_dir, 'info.txt'), 'w') as file:
         file.write('Title: {0}\n'
                    'Year: {1}\n'
                    'Release date: {2}\n'
                    'Rating: {3}\n'
                    'Runtime: {4}\n'
-                   'Plot summary: {5}'.format(movie.title, movie.year, movie.release_date, movie.rating,
-                                              print_time(movie.runtime),
-                                              movie.plot))
+                   'Plot summary: {5}\n'
+                   'Genres: {6}'.format(movie.title, movie.year, movie.release_date, movie.rating,
+                                        print_time(movie.runtime), movie.plot,
+                                        ' '.join([genre for genre in movie.genres])))
 
 
 def download_cover(movie, path):
+    if movie is None or movie.cover is None:
+        return
     try:
         response = requests.get(movie.cover, stream=True)
-    except RequestException as error:
-        print(error)
-        return None
-    if response.ok:
-        extension = os.path.splitext(movie.cover)[1]
-        filename = "{0}_{1}{2}".format(movie.title, movie.year, extension)
-        filename = format_file_name(filename.lower())
-        with open(os.path.join(path, filename), 'wb') as image:
-            for block in response.iter_content(1024):
-                if not block:
-                    break
-                image.write(block)
+        if response.ok:
+            extension = os.path.splitext(movie.cover)[1]
+            filename = "{0}_{1}{2}".format(movie.year, movie.title, extension)
+            filename = format_file_name(filename.lower())
+            with open(os.path.join(path, filename), 'wb') as image:
+                for block in response.iter_content(1024):
+                    if not block:
+                        break
+                    image.write(block)
+    except:
+        pass
 
 
-def move_files(src, dest, movie):
-    folder_name = '{0}_{1}_{2}'.format(movie.title, movie.year, movie.rating)
+def move_files(src, dst, movie):
+    if src is None or dst is None or movie is None:
+        return False
+    folder_name = '{0}_{1}_{2}'.format(movie.year, movie.title, movie.rating)
     folder_name = format_file_name(folder_name)
-    genres_path = ','.join(str(e) for e in movie.genres).lower()
-    dest = os.path.join(dest, genres_path)
-    if not os.path.exists(dest):
-        os.makedirs(dest)
-    dest = os.path.join(dest, folder_name)
-    if not os.path.exists(dest):
-        os.makedirs(dest)
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    dst = os.path.join(dst, folder_name)
+    if not os.path.exists(dst):
+        os.makedirs(dst)
     if os.path.isdir(src):
         # src is a directory
         files = os.listdir(src)
-        print('Moving files from {0} to {1}'.format(src, dest))
         for file in files:
-            shutil.move(os.path.join(src, file), dest)
+            shutil.move(os.path.join(src, file), dst)
         shutil.rmtree(src)
     else:
         # src is a movie file
-        print('Movie file {0} to {1}'.format(str(src.encode("utf8")), str(dest.encode("utf8"))))
-        shutil.move(src, dest)
-    print('Downloading movie cover...')
-    download_cover(movie, dest)
-    print('Printing movie information...')
-    print_movie_information(dest, movie)
-    print('Done')
-    return None
+        shutil.move(src, dst)
+    download_cover(movie, dst)
+    print_movie_information(dst, movie)
+    return True
 
 
 def list_folders(path):
+    if path is None: return
     files = os.listdir(path)
     for file in files:
         if os.path.isdir(os.path.join(path, file)):
@@ -85,25 +88,31 @@ def list_folders(path):
 
 
 def print_time(mins):
+    if mins is None: return None
     h, m = divmod(int(mins), 60)
     return "%02d:%02d" % (h, m)
 
 
 def search(movie_title, auto_select):
     guess = guessit(movie_title)
+    if guess is None:
+        guess = {}
     if 'title' not in guess:
-        guess['title'] = os.path.splitext(movie_title)[0]
-    movies = api.search_movie(guess['title'])
-    if movies is None:
+        guess['title'] = movie_title
+    movies_list = api.search_movie(guess['title'])
+    if movies_list is None:
         return None
-    print("Found {0} movies".format(len(movies)))
-    my_movie = None
-    for current_movie in movies:
+    if auto_select is False:
+        print("Found {0} movies".format(len(movies_list)))
+    a_movie = None
+    for movie_item in movies_list:
         if auto_select is True:
-            if 'year' in guess and 'year' in current_movie:
-                if int(current_movie.get('year')) != guess['year']:
+            try:
+                if int(movie_item.get('year')) != int(guess.get('year')):
                     continue
-        print('Title: {0}, Year: {1}'.format(current_movie.get('title'), current_movie.get('year')))
+            except:
+                pass
+        print('Title: {0}, Year: {1}'.format(movie_item.get('title'), movie_item.get('year')))
         flag = not auto_select
         answer = "y"
         while flag:
@@ -113,21 +122,25 @@ def search(movie_title, auto_select):
             else:
                 flag = False
         if answer == 'y':
-            my_movie = current_movie
+            a_movie = movie_item
             break
         elif answer == 's':
             return None
-    if my_movie is None:
+    if a_movie is None:
         return None
-    print("Please wait, getting more information...")
-    api.update(my_movie)
+    try:
+        api.update(a_movie)
+    except:
+        pass
     movie = Movie()
-    movie.title = my_movie['title']
-    movie.year = my_movie['year']
-    movie.release_date = my_movie['original air date']
-    movie.rating = my_movie['rating']
-    movie.runtime = my_movie['runtime'][0]
-    movie.genres = my_movie['genres']
-    movie.cover = my_movie['cover url']
-    movie.plot = my_movie['plot outline']
+    movie.title = a_movie.get('title')
+    movie.year = a_movie.get('year')
+    movie.release_date = a_movie.get('original air date')
+    movie.rating = a_movie.get('rating')
+    movie.runtime = a_movie.get('runtime')
+    if movie.runtime is not None:
+        movie.runtime = movie.runtime[0]
+    movie.genres = a_movie.get('genres')
+    movie.cover = a_movie.get('cover url')
+    movie.plot = a_movie.get('plot outline')
     return movie
