@@ -49,7 +49,7 @@ Usage
 
 After the installation process is finished you can access the program from a command line interface using the following command:
 
-`movies_organizer [--src "source folder"] [--dest "destination folder"] [--auto]`
+`movies_organizer [--src "source folder"] [--dst "destination folder"] [--auto]`
 
 1. You can simply choose the same folder for src and dest or omit the dest option to move the files to the same directory.
 2. In case src and dest were omitted, the program will proceed with the same directory the program was run from.
