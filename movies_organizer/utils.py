@@ -6,7 +6,6 @@ import sys
 
 from guessit import guessit
 import imdb
-from requests import RequestException
 
 from movies_organizer.movie import Movie
 
@@ -101,6 +100,7 @@ def search(movie_title, auto_select):
         guess['title'] = movie_title
     movies_list = api.search_movie(guess['title'])
     if movies_list is None:
+        print('No movies found')
         return None
     if auto_select is False:
         print("Found {0} movies".format(len(movies_list)))

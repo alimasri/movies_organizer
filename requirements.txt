@@ -1,4 +1,3 @@
 guessit
 requests
-imdbpy
 imdb
