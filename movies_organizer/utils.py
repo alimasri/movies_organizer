@@ -129,8 +129,10 @@ def search(movie_title, auto_select):
     if a_movie is None:
         return None
     try:
+        print('Getting more information...')
         api.update(a_movie)
     except:
+        print('Unable to load additional movie information')
         pass
     movie = Movie()
     movie.title = a_movie.get('title')
